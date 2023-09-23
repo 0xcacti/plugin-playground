@@ -50,4 +50,20 @@ describe("banner", function()
         local after_pop = find_mapping("asdfasdf")
         assert.are.same(nil, after_pop)
     end)
+
+
+    it('can delete mappings after pop: yes existing', function()
+        vim.keymap.set('n', "aoeuaoeu", "echo 'This is a test'")
+        local rhs = "echo 'This is a different test'"
+        require("banner").push("test1", "n", {
+            aoeuaoeu = rhs,
+        })
+
+        local found = find_mapping("aoeuaoeu")
+        assert.are.same(rhs, found.rhs)
+
+        require("banner").pop("test1", "n")
+        local after_pop = find_mapping("aoeuaoeu")
+        assert.are.same("echo 'This is a test'", after_pop.rhs)
+    end)
 end)
