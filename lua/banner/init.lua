@@ -23,8 +23,11 @@ M.push = function(name, mode, mappings)
             table.insert(existing_maps, existing)
         end
     end
-    P(existing_maps)
-    M._stack = existing_maps
+    M._stack[name] = {
+        existing = existing_maps,
+        mappings = mappings,
+    }
+
     for lhs, rhs in pairs(mappings) do
         vim.keymap.set(mode, lhs, rhs)
     end
@@ -36,6 +39,8 @@ M.push("debug_mode", "n", {
 })
 
 M.pop = function(name)
+    local existing = M._stack[name]
+    m_stack[namer] = nil
 end
 
 return M
