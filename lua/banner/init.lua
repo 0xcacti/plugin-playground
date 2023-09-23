@@ -1,8 +1,5 @@
 local M = {}
 
-M.setup = function()
-    print("penis")
-end
 
 local find_mapping = function(maps, lhs)
     for _, value in ipairs(maps) do
@@ -16,33 +13,50 @@ M._stack = {}
 
 M.push = function(name, mode, mappings)
     local maps = vim.api.nvim_get_keymap(mode)
+
     local existing_maps = {}
     for lhs, rhs in pairs(mappings) do
         local existing = find_mapping(maps, lhs)
         if existing then
-            table.insert(existing_maps, existing)
+            existing_maps[lhs] = existing
         end
     end
-    M._stack[name] = {
+
+    for lhs, rhs in pairs(mappings) do
+        -- TODDO: need some way to pass options in here
+        vim.keymap.set(mode, lhs, rhs)
+    end
+
+    -- TODO: Next time show bash about metatables POGSLIDE
+    M._stack[name] = M._stack[name] or {}
+
+    M._stack[name][mode] = {
         existing = existing_maps,
         mappings = mappings,
     }
+end
 
-    for lhs, rhs in pairs(mappings) do
-        vim.keymap.set(mode, lhs, rhs)
+M.pop = function(name, mode)
+    local state = M._stack[name][mode]
+    M._stack[name][mode] = nil
+
+    for lhs in pairs(state.mappings) do
+        if state.existing[lhs] then
+            -- Handle mappings that existed
+            local og_mapping = state.existing[lhs]
+
+            -- TODO: Handle the options from the table
+            vim.keymap.set(mode, lhs, og_mapping.rhs)
+        else
+            -- Handled mappings that didn't exist
+            vim.keymap.del(mode, lhs)
+        end
     end
 end
 
-M.push("debug_mode", "n", {
-    [" st"] = "echo 'Hello'",
-    [" sz"] = "echo 'Hello'",
-})
-
-M.pop = function(name)
-    local existing = M._stack[name]
-    m_stack[namer] = nil
+M.clear = function()
+    M._stack = {}
 end
-
 return M
 
 

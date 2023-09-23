@@ -1,0 +1,9 @@
+{
+    "diagnostics.globals": [
+        "vim",
+        "m_stack",
+        "describe",
+        "before_each",
+        "it"
+    ]
+}
