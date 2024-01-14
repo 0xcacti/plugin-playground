@@ -4,12 +4,19 @@ M._stack = {}
 
 M.comment = function()
     local line = vim.api.nvim_get_current_line()
-    local comment_line = "-- " .. line
+    local position = string.find(line, "%S")
+    local comment_line
+    if position then
+        comment_line = line:sub(1, position - 1) .. "-- " .. line:sub(position)
+    else
+        comment_line = "-- " .. line
+    end
     vim.api.nvim_set_current_line(comment_line)
 end
 
 M.uncomment = function()
     local line = vim.api.nvim_get_current_line()
+
     local comment_line = line:sub(4)
     vim.api.nvim_set_current_line(comment_line)
 end
