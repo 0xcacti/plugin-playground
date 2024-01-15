@@ -4,6 +4,7 @@ describe("banner", function()
     end)
 
     it("it logs", function()
-        require("banner").check_log()
+        local gl = require("banner")
+        gl.check_log()
     end)
 end)
