@@ -5,7 +5,7 @@ local core = require('core')
 
 
 M.setup = function(new_config)
-
+    static.config = vim.tbl_deep_extend("force", static.config, new_config or {})
 end
 
 
@@ -45,11 +45,6 @@ M.check_log = function()
 
     log = new_log
 
-    -- format log
-    for key, value in pairs(log) do
-        print(key, value)
-    end
-
 
     core.win.open_float(bufnr, {
         enter = true,
@@ -63,15 +58,18 @@ M.check_log = function()
         style = "minimal",
         title_pos = "center",
     })
-
     vim.api.nvim_set_option_value("modifiable", true, {
         buf = bufnr,
     })
-
-    vim.api.nvim_set_option_value("filetype", "git" < {
+    vim.api.nvim_set_option_value("filetype", "git", {
+        buf = bufnr,
+    })
+    vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, log)
+    vim.api.nvim_set_option_value("modifiable", false, {
         buf = bufnr,
     })
 
+    -- set keymap
     vim.keymap.set("n", static.config.keymap.close, function()
         pcall(vim.api.nvim_buf_delete, bufnr, {
             force = true,
