@@ -6,6 +6,7 @@ local core = require('core')
 
 M.setup = function(new_config)
     static.config = vim.tbl_deep_extend("force", static.config, new_config or {})
+    vim.api.nvim_create_user_command("GL", M.check_log, {})
 end
 
 
@@ -79,6 +80,5 @@ M.check_log = function()
     })
 end
 
-vim.api.nvim_create_user_command("GL", M.check_log, {})
 
 return M
