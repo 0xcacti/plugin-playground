@@ -7,6 +7,7 @@ local config = {
     },
     keymap = {
         close = "q",
+        inspect = "<leader>et",
     },
 }
 

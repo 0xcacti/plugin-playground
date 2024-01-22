@@ -7,6 +7,10 @@ local core = require('core')
 M.setup = function(new_config)
     static.config = vim.tbl_deep_extend("force", static.config, new_config or {})
     vim.api.nvim_create_user_command("GL", M.check_log, {})
+    vim.keymap.set("n", static.config.keymap.inspect, M.check_log, {
+        noremap = true,
+        silent = true,
+    })
 end
 
 
